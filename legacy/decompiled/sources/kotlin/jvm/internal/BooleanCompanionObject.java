@@ -1,0 +1,13 @@
+package kotlin.jvm.internal;
+
+import kotlin.Metadata;
+
+/* JADX INFO: compiled from: PrimitiveCompanionObjects.kt */
+/* JADX INFO: loaded from: classes.dex */
+@Metadata(m533bv = {1, 0, 3}, m534d1 = {"\u0000\f\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0002\b\u0002\bÀ\u0002\u0018\u00002\u00020\u0001B\u0007\b\u0002¢\u0006\u0002\u0010\u0002¨\u0006\u0003"}, m535d2 = {"Lkotlin/jvm/internal/BooleanCompanionObject;", "", "()V", "kotlin-stdlib"}, m536k = 1, m537mv = {1, 1, 16})
+public final class BooleanCompanionObject {
+    public static final BooleanCompanionObject INSTANCE = new BooleanCompanionObject();
+
+    private BooleanCompanionObject() {
+    }
+}

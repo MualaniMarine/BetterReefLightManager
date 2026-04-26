@@ -1,0 +1,35 @@
+# Android Studio / IntelliJ
+.idea/
+*.iml
+
+# Gradle
+.gradle/
+build/
+app/build/
+*/build/
+
+# Kotlin
+.kotlin/
+
+# Local SDK config
+local.properties
+
+# Logs / temp
+*.log
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java / Kotlin compiled output
+*.class
+
+# Crash logs
+hs_err_pid*
+replay_pid*
+
+# Local scratch / backups
+.tmp_qr_tool/
+NP_backup_*.zip

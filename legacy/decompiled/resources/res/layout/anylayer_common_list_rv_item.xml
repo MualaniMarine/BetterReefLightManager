@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/anylayer_common_bg_press_white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:textSize="@dimen/anylayer_common_text_content"
+        android:textColor="@color/anylayer_common_text_content"
+        android:gravity="center"
+        android:id="@+id/anylayer_common_list_tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"/>
+</LinearLayout>

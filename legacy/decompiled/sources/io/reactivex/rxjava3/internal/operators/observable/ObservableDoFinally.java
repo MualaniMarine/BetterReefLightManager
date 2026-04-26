@@ -1,0 +1,124 @@
+package io.reactivex.rxjava3.internal.operators.observable;
+
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.exceptions.Exceptions;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.internal.disposables.DisposableHelper;
+import io.reactivex.rxjava3.internal.fuseable.QueueDisposable;
+import io.reactivex.rxjava3.internal.observers.BasicIntQueueDisposable;
+import io.reactivex.rxjava3.plugins.RxJavaPlugins;
+
+/* JADX INFO: loaded from: classes.dex */
+public final class ObservableDoFinally<T> extends AbstractObservableWithUpstream<T, T> {
+    final Action onFinally;
+
+    public ObservableDoFinally(ObservableSource<T> source, Action onFinally) {
+        super(source);
+        this.onFinally = onFinally;
+    }
+
+    @Override // io.reactivex.rxjava3.core.Observable
+    protected void subscribeActual(Observer<? super T> observer) {
+        this.source.subscribe(new DoFinallyObserver(observer, this.onFinally));
+    }
+
+    static final class DoFinallyObserver<T> extends BasicIntQueueDisposable<T> implements Observer<T> {
+        private static final long serialVersionUID = 4109457741734051389L;
+        final Observer<? super T> downstream;
+        final Action onFinally;
+
+        /* JADX INFO: renamed from: qd */
+        QueueDisposable<T> f840qd;
+        boolean syncFused;
+        Disposable upstream;
+
+        DoFinallyObserver(Observer<? super T> actual, Action onFinally) {
+            this.downstream = actual;
+            this.onFinally = onFinally;
+        }
+
+        @Override // io.reactivex.rxjava3.core.Observer
+        public void onSubscribe(Disposable d) {
+            if (DisposableHelper.validate(this.upstream, d)) {
+                this.upstream = d;
+                if (d instanceof QueueDisposable) {
+                    this.f840qd = (QueueDisposable) d;
+                }
+                this.downstream.onSubscribe(this);
+            }
+        }
+
+        @Override // io.reactivex.rxjava3.core.Observer
+        public void onNext(T t) {
+            this.downstream.onNext(t);
+        }
+
+        @Override // io.reactivex.rxjava3.core.Observer
+        public void onError(Throwable t) {
+            this.downstream.onError(t);
+            runFinally();
+        }
+
+        @Override // io.reactivex.rxjava3.core.Observer
+        public void onComplete() {
+            this.downstream.onComplete();
+            runFinally();
+        }
+
+        @Override // io.reactivex.rxjava3.disposables.Disposable
+        public void dispose() {
+            this.upstream.dispose();
+            runFinally();
+        }
+
+        @Override // io.reactivex.rxjava3.disposables.Disposable
+        public boolean isDisposed() {
+            return this.upstream.isDisposed();
+        }
+
+        @Override // io.reactivex.rxjava3.internal.fuseable.QueueFuseable
+        public int requestFusion(int mode) {
+            QueueDisposable<T> queueDisposable = this.f840qd;
+            if (queueDisposable == null || (mode & 4) != 0) {
+                return 0;
+            }
+            int iRequestFusion = queueDisposable.requestFusion(mode);
+            if (iRequestFusion != 0) {
+                this.syncFused = iRequestFusion == 1;
+            }
+            return iRequestFusion;
+        }
+
+        @Override // io.reactivex.rxjava3.internal.fuseable.SimpleQueue
+        public void clear() {
+            this.f840qd.clear();
+        }
+
+        @Override // io.reactivex.rxjava3.internal.fuseable.SimpleQueue
+        public boolean isEmpty() {
+            return this.f840qd.isEmpty();
+        }
+
+        @Override // io.reactivex.rxjava3.internal.fuseable.SimpleQueue
+        public T poll() throws Throwable {
+            T tPoll = this.f840qd.poll();
+            if (tPoll == null && this.syncFused) {
+                runFinally();
+            }
+            return tPoll;
+        }
+
+        void runFinally() {
+            if (compareAndSet(0, 1)) {
+                try {
+                    this.onFinally.run();
+                } catch (Throwable th) {
+                    Exceptions.throwIfFatal(th);
+                    RxJavaPlugins.onError(th);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_line"
+    android:showDividers="middle">
+    <com.nemo.caideng.widget.SeekNumView
+        android:id="@+id/sv_seek_1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+    <com.nemo.caideng.widget.SeekNumView
+        android:id="@+id/sv_seek_2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+    <com.nemo.caideng.widget.SeekNumView
+        android:id="@+id/sv_seek_3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+    <com.nemo.caideng.widget.SeekNumView
+        android:id="@+id/sv_seek_4"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+    <com.nemo.caideng.widget.SeekNumView
+        android:id="@+id/sv_seek_5"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+    <com.nemo.caideng.widget.SeekNumView
+        android:id="@+id/sv_seek_6"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+</LinearLayout>

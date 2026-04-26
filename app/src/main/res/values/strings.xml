@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BetterReefLightManager</string>
+    <string name="audit_summary">已重建标准 Android 工程骨架，当前优先恢复配网配置、设备连接和协议调试链路。</string>
+    <string name="audit_summary_detail">当前版本不是原始功能的完整恢复，而是一个可编译、可继续迁移的干净基线。已接回：Gradle 工程、基础存储、协议工具、Socket 连接、最小控制页。待迁移：Esptouch 配网、时间曲线 UI、扫码、图表和历史页面。</string>
+    <string name="open_network">打开网络配置页</string>
+    <string name="open_control">打开控制调试页</string>
+    <string name="show_rebuild_scope">显示当前重建范围</string>
+    <string name="network_title">网络与模式配置</string>
+    <string name="network_desc">这里先恢复本地配置存储，后续再把 Esptouch 配网、设备扫描和设备型号识别迁回来。</string>
+    <string name="network_ssid">Wi‑Fi SSID</string>
+    <string name="network_password">Wi‑Fi 密码</string>
+    <string name="network_ip_prefix">最近设备地址或网段</string>
+    <string name="network_ap_mode">使用 AP 模式</string>
+    <string name="network_ssid_required">SSID 不能为空</string>
+    <string name="network_saved">网络配置已保存</string>
+    <string name="save">保存</string>
+    <string name="control_title">控制调试 - %1$s / %2$s</string>
+    <string name="control_device_ip">设备 IP</string>
+    <string name="control_connect">连接设备</string>
+    <string name="control_disconnect">断开连接</string>
+    <string name="control_auto">自动模式</string>
+    <string name="control_demo">演示模式</string>
+    <string name="control_send_auto">发送自动模式切换</string>
+    <string name="control_send_demo">发送演示模式切换</string>
+    <string name="control_send_manual">发送默认手动亮度</string>
+    <string name="control_read_all">读取全部配置</string>
+    <string name="control_sync_time">同步当前时间</string>
+    <string name="control_log">通信日志</string>
+    <string name="control_ip_required">请先输入设备 IP</string>
+    <string name="control_connect_first">请先连接设备</string>
+    <string name="control_connecting">正在连接 %1$s:%2$d</string>
+    <string name="control_connected">连接成功：%1$s</string>
+    <string name="control_disconnected">连接断开：%1$s</string>
+    <string name="control_send">发送: %1$s</string>
+    <string name="control_receive">接收: %1$s</string>
+    <string name="control_resend">重发: %1$s</string>
+</resources>
+

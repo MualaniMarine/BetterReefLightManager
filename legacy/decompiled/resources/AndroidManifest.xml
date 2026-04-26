@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="23"
+    android:versionName="2.0.3"
+    android:compileSdkVersion="29"
+    android:compileSdkVersionCodename="10"
+    package="com.nemo.caideng"
+    platformBuildVersionCode="29"
+    platformBuildVersionName="10">
+    <uses-sdk
+        android:minSdkVersion="23"
+        android:targetSdkVersion="29"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <application
+        android:theme="@style/AppTheme"
+        android:label="@string/app_name"
+        android:icon="@mipmap/icon_noo_logo"
+        android:name="com.nemo.caideng.BaseApplication"
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        android:extractNativeLibs="false"
+        android:usesCleartextTraffic="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:requestLegacyExternalStorage="true">
+        <meta-data
+            android:name="design_width_in_dp"
+            android:value="480"/>
+        <activity
+            android:icon="@mipmap/icon_noo_logo"
+            android:name="com.nemo.caideng.MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.nemo.caideng.ControlActivity"/>
+        <activity
+            android:name="com.nemo.caideng.NetWorkAndModelActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name="com.nemo.caideng.ControlModelActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.nemo.caideng.WebActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.nemo.caideng.ControlModelActivity1"/>
+        <activity android:name="com.nemo.caideng.AirkissActivity"/>
+        <activity android:name="com.nemo.caideng.TestControlModelActivity1"/>
+        <activity
+            android:name="com.nemo.caideng.OptionsScannerActivity"
+            android:screenOrientation="portrait"/>
+        <provider
+            android:name="me.jessyan.autosize.InitProvider"
+            android:exported="false"
+            android:multiprocess="true"
+            android:authorities="com.nemo.caideng.autosize-init-provider"/>
+        <activity
+            android:theme="@style/LayerActivityTheme"
+            android:name="per.goweii.anylayer.LayerActivity"/>
+        <provider
+            android:name="per.goweii.anylayer.ActivityProvider"
+            android:exported="false"
+            android:multiprocess="true"
+            android:authorities="com.nemo.caideng.activityprovider"/>
+    </application>
+</manifest>

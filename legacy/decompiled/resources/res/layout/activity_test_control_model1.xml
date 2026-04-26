@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.nemo.caideng.widget.AllSeekNumView
+        android:layout_gravity="center_vertical"
+        android:id="@+id/asnv_seek"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <com.nemo.caideng.widget.PreventRepeatButton
+        android:enabled="false"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_gravity="bottom"
+        android:id="@+id/btn_save"
+        android:background="@drawable/state_btn_back"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:text="发送"/>
+</FrameLayout>
