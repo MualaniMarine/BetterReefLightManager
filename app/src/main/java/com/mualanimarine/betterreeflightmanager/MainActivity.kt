@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Paint
 import android.graphics.ImageDecoder
 import android.graphics.ImageFormat
 import android.graphics.Matrix
@@ -72,6 +73,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -94,6 +97,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
@@ -950,7 +954,8 @@ private fun ControlScreen(onBack: () -> Unit) {
     var connectionState by rememberSaveable { mutableStateOf("未连接") }
     var currentDeviceName by rememberSaveable { mutableStateOf("未知") }
     var showFixedPackets by rememberSaveable { mutableStateOf(false) }
-    var showCurveConfig by rememberSaveable { mutableStateOf(false) }
+    var showManualBrightnessEditor by rememberSaveable { mutableStateOf(false) }
+    var showBatchToolsEditor by rememberSaveable { mutableStateOf(false) }
     var showDetailedCurveEditor by rememberSaveable { mutableStateOf(false) }
     var sendConfigAutoMode by rememberSaveable { mutableStateOf(false) }
     var manualValuesText by rememberSaveable { mutableStateOf(toCsv(defaultHandValues(Constant.Type.TYPE_K7))) }
@@ -1426,7 +1431,7 @@ private fun ControlScreen(onBack: () -> Unit) {
                 )
                 ControlPanelCard(
                     title = "设备命令控制区",
-                    subtitle = "连接、读取、同步和模式类命令集中在这里。"
+                    subtitle = "连接、读取、同步和模式类命令。"
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
@@ -1676,8 +1681,8 @@ private fun ControlScreen(onBack: () -> Unit) {
                 }
 
                 ControlPanelCard(
-                    title = "当前方案时间曲线",
-                    subtitle = "默认展示 6 路通道折线，需要时再展开详细编辑。"
+                    title = "当前方案曲线",
+                    subtitle = "查看并设置当前方案亮度曲线。"
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
@@ -1707,7 +1712,7 @@ private fun ControlScreen(onBack: () -> Unit) {
                                             if (showDetailedCurveEditor) {
                                                 "已展开 24 个时点编辑。"
                                             } else {
-                                                "先看曲线，需要时再展开。"
+                                                "点击展开 24 个时点编辑。"
                                             },
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -1737,7 +1742,7 @@ private fun ControlScreen(onBack: () -> Unit) {
 
                 ControlPanelCard(
                     title = "曲线配置区",
-                    subtitle = "手动亮度、批量填充和配置发送，默认收起。"
+                    subtitle = "管理手动亮度和批量时段设置。"
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
@@ -1745,62 +1750,55 @@ private fun ControlScreen(onBack: () -> Unit) {
                     ) {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)),
-                            shape = RoundedCornerShape(18.dp),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.12f))
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+                            shape = RoundedCornerShape(16.dp)
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 14.dp, vertical = 12.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                            Column(
+                                modifier = Modifier.padding(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Text("曲线配置", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                                    Text(
-                                        if (showCurveConfig) "已展开亮度、批量设置和发送配置。" else "默认收起，需要时再展开设置。",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                CollapsiblePanelHeader(
+                                    title = "手动亮度",
+                                    subtitle = if (showManualBrightnessEditor) "已展开六路手动亮度调节。" else "点击展开当前六路手动亮度。",
+                                    expanded = showManualBrightnessEditor,
+                                    onToggle = { showManualBrightnessEditor = !showManualBrightnessEditor }
+                                )
+                                if (showManualBrightnessEditor) {
+                                    SixChannelValueEditor(
+                                        value = manualValuesText,
+                                        onValueChange = { manualValuesText = it }
+                                    )
+                                    CompactOutlinedButtonRow(
+                                        primaryLabel = "载入预设亮度",
+                                        onPrimaryClick = {
+                                            manualValuesText = toCsv(defaultHandValues(selectedType))
+                                            logs.add("已填入预设亮度")
+                                        },
+                                        secondaryLabel = "清零手动亮度",
+                                        onSecondaryClick = {
+                                            pendingCurveDangerAction = CurveDangerAction.ClearManualValues
+                                        }
+                                    )
+                                    CompactSingleOutlinedButton(
+                                        label = "发送当前亮度",
+                                        onClick = {
+                                            val manualValues = parseValuesCsv(manualValuesText)
+                                            if (manualValues == null) {
+                                                logs.add("手动亮度格式错误，需要 6 个 0-100 数值")
+                                            } else {
+                                                sendWithLog(connectThread, CommandUtil.handModelLuminance(manualValues), logs)
+                                            }
+                                        }
                                     )
                                 }
-                                Switch(
-                                    checked = showCurveConfig,
-                                    onCheckedChange = { showCurveConfig = it }
+
+                                CollapsiblePanelHeader(
+                                    title = "批量设置工具",
+                                    subtitle = if (showBatchToolsEditor) "已展开时段、批量亮度和平滑工具。" else "点击展开时段批量设置工具。",
+                                    expanded = showBatchToolsEditor,
+                                    onToggle = { showBatchToolsEditor = !showBatchToolsEditor }
                                 )
-                            }
-                        }
-
-                        if (showCurveConfig) {
-                            SectionLabel("手动亮度")
-                            OutlinedTextField(
-                                value = manualValuesText,
-                                onValueChange = { manualValuesText = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                label = { Text("6 路亮度值（十进制 0-100，逗号分隔）") }
-                            )
-                            CompactOutlinedButtonRow(
-                                primaryLabel = "载入预设亮度",
-                                onPrimaryClick = {
-                                    manualValuesText = toCsv(defaultHandValues(selectedType))
-                                    logs.add("已填入预设亮度")
-                                },
-                                secondaryLabel = "清零手动亮度",
-                                onSecondaryClick = {
-                                    pendingCurveDangerAction = CurveDangerAction.ClearManualValues
-                                }
-                            )
-
-                            SectionLabel("批量设置工具")
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-                                shape = RoundedCornerShape(16.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                                ) {
+                                if (showBatchToolsEditor) {
                                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                         OutlinedTextField(
                                             value = batchStartHourText,
@@ -1815,15 +1813,10 @@ private fun ControlScreen(onBack: () -> Unit) {
                                             label = { Text("结束小时") }
                                         )
                                     }
-                                    OutlinedTextField(
+                                    SixChannelValueEditor(
                                         value = batchValuesText,
                                         onValueChange = { batchValuesText = it },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        label = { Text("批量亮度值（十进制 0-100，6 路逗号分隔）") },
-                                        isError = validateValuesCsv(batchValuesText) != null,
-                                        supportingText = {
-                                            validateValuesCsv(batchValuesText)?.let { Text(it) }
-                                        }
+                                        title = "批量亮度值"
                                     )
                                     OutlinedTextField(
                                         value = smoothStepText,
@@ -1956,14 +1949,14 @@ private fun ControlScreen(onBack: () -> Unit) {
                                         }
                                     )
                                 }
-                            }
 
-                            SectionLabel("设备类型")
-                            ChipRow(
-                                values = listOf(Constant.Type.TYPE_K7 to "K7", Constant.Type.TYPE_X4 to "X4"),
-                                selected = selectedType,
-                                onSelected = { selectedType = it }
-                            )
+                                SectionLabel("设备类型")
+                                ChipRow(
+                                    values = listOf(Constant.Type.TYPE_K7 to "K7", Constant.Type.TYPE_X4 to "X4"),
+                                    selected = selectedType,
+                                    onSelected = { selectedType = it }
+                                )
+                            }
                         }
                     }
                 }
@@ -2030,16 +2023,16 @@ private fun ControlScreen(onBack: () -> Unit) {
 @Composable
 private fun CurvePreviewCard(items: List<ScheduleEditorItem>) {
     val series = remember(items) { buildCurvePreviewSeries(items) }
-    val channelColors = listOf(
-        Color(0xFFBFD9FF),
-        Color(0xFF6F8CFF),
-        Color(0xFF8AD8A8),
-        Color(0xFFC8A6FF),
-        Color(0xFF8FE7F7),
-        Color(0xFFFFA3A3)
-    )
+    val channelColors = curveChannelColors()
     val gridColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.16f)
     val whiteChannelContrastColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.28f)
+    val axisLineColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
+    val axisLabelColor = android.graphics.Color.argb(
+        (0.76f * 255).toInt(),
+        (MaterialTheme.colorScheme.onSurfaceVariant.red * 255).toInt(),
+        (MaterialTheme.colorScheme.onSurfaceVariant.green * 255).toInt(),
+        (MaterialTheme.colorScheme.onSurfaceVariant.blue * 255).toInt()
+    )
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -2060,15 +2053,33 @@ private fun CurvePreviewCard(items: List<ScheduleEditorItem>) {
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
+                    .height(248.dp)
             ) {
-                val leftPadding = 30f
-                val rightPadding = 12f
+                val leftPadding = 42f
+                val rightPadding = 16f
                 val topPadding = 14f
-                val bottomPadding = 22f
+                val bottomPadding = 34f
                 val chartWidth = size.width - leftPadding - rightPadding
                 val chartHeight = size.height - topPadding - bottomPadding
                 if (chartWidth <= 0f || chartHeight <= 0f) return@Canvas
+                val axisPaint = Paint().apply {
+                    color = axisLabelColor
+                    textSize = 20f
+                    isAntiAlias = true
+                }
+
+                drawLine(
+                    color = axisLineColor,
+                    start = Offset(leftPadding, topPadding),
+                    end = Offset(leftPadding, topPadding + chartHeight),
+                    strokeWidth = 1.5f
+                )
+                drawLine(
+                    color = axisLineColor,
+                    start = Offset(leftPadding, topPadding + chartHeight),
+                    end = Offset(leftPadding + chartWidth, topPadding + chartHeight),
+                    strokeWidth = 1.5f
+                )
 
                 repeat(5) { step ->
                     val y = topPadding + chartHeight * step / 4f
@@ -2079,13 +2090,35 @@ private fun CurvePreviewCard(items: List<ScheduleEditorItem>) {
                         strokeWidth = 1f
                     )
                 }
-                repeat(6) { step ->
-                    val x = leftPadding + chartWidth * step / 5f
+                repeat(13) { step ->
+                    val x = leftPadding + chartWidth * step / 12f
                     drawLine(
                         color = gridColor,
                         start = Offset(x, topPadding),
                         end = Offset(x, topPadding + chartHeight),
                         strokeWidth = 1f
+                    )
+                }
+
+                val yLabels = listOf("100", "75", "50", "25", "0")
+                yLabels.forEachIndexed { index, label ->
+                    val y = topPadding + chartHeight * index / 4f
+                    drawContext.canvas.nativeCanvas.drawText(
+                        label,
+                        4f,
+                        y + 8f,
+                        axisPaint
+                    )
+                }
+
+                val xLabels = listOf("00", "02", "04", "06", "08", "10", "12", "14", "16", "18", "20", "22", "24")
+                xLabels.forEachIndexed { index, label ->
+                    val x = leftPadding + chartWidth * index / 12f
+                    drawContext.canvas.nativeCanvas.drawText(
+                        label,
+                        x - 10f,
+                        topPadding + chartHeight + 28f,
+                        axisPaint
                     )
                 }
 
@@ -2131,14 +2164,119 @@ private fun CurvePreviewCard(items: List<ScheduleEditorItem>) {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun CollapsiblePanelHeader(
+    title: String,
+    subtitle: String,
+    expanded: Boolean,
+    onToggle: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .pointerInput(expanded) {
+                detectTapGestures(onTap = { onToggle() })
+            },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)),
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.12f))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Text(
+                text = if (expanded) "收起" else "展开",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+
+@Composable
+private fun SixChannelValueEditor(
+    value: String,
+    onValueChange: (String) -> Unit,
+    title: String = "6 路亮度值"
+) {
+    val channelNames = listOf("白光", "深蓝", "绿色", "紫外", "浅蓝", "红光")
+    val channelColors = curveChannelColors()
+    val channelValues = parseValuesCsvDraft(value)
+    val errorText = validateValuesCsv(value)
+
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            text = "$title（十进制 0-100）",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold
+        )
+        channelNames.forEachIndexed { index, name ->
+            val channelValue = channelValues.getOrElse(index) { "0" }
+            val sliderValue = channelValue.toFloatOrNull()?.coerceIn(0f, 100f) ?: 0f
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text("00:00", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text("12:00", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text("23:59", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    text = name,
+                    modifier = Modifier.width(44.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = channelColors[index]
+                )
+                Slider(
+                    value = sliderValue,
+                    onValueChange = { updated ->
+                        onValueChange(updateValuesCsvAtIndex(value, index, updated.toInt().coerceIn(0, 100).toString()))
+                    },
+                    valueRange = 0f..100f,
+                    modifier = Modifier.weight(1f),
+                    colors = SliderDefaults.colors(
+                        thumbColor = channelColors[index],
+                        activeTrackColor = channelColors[index],
+                        inactiveTrackColor = channelColors[index].copy(alpha = 0.22f)
+                    )
+                )
+                OutlinedTextField(
+                    value = channelValue,
+                    onValueChange = { updated ->
+                        val filtered = updated.filter { it.isDigit() }.take(3)
+                        val normalized = filtered.toIntOrNull()?.coerceIn(0, 100)?.toString() ?: filtered
+                        onValueChange(updateValuesCsvAtIndex(value, index, normalized))
+                    },
+                    modifier = Modifier.width(74.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    suffix = { Text("%") }
+                )
             }
+        }
+        errorText?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
+            )
         }
     }
 }
@@ -2546,6 +2684,34 @@ private fun CompactOutlinedButtonRow(
 }
 
 @Composable
+private fun CompactSingleOutlinedButton(
+    label: String,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        onClick = onClick,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 6.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
 private fun ScheduleEditorList(
     items: List<ScheduleEditorItem>,
     onItemChange: (Int, ScheduleEditorItem) -> Unit
@@ -2944,6 +3110,24 @@ private fun parseValuesCsv(value: String): ByteArray? {
     return values
 }
 
+private fun parseValuesCsvDraft(value: String): List<String> {
+    val parts = value.split(",")
+        .map { it.trim() }
+        .toMutableList()
+    while (parts.size < 6) {
+        parts += "0"
+    }
+    return parts.take(6)
+}
+
+private fun updateValuesCsvAtIndex(source: String, index: Int, newValue: String): String {
+    val parts = parseValuesCsvDraft(source).toMutableList()
+    if (index in parts.indices) {
+        parts[index] = newValue
+    }
+    return parts.joinToString(",")
+}
+
 private fun validateValuesCsv(value: String): String? {
     val parts = value.split(",").map { it.trim() }.filter { it.isNotEmpty() }
     if (parts.size != 6) return "需要填写 6 个数值"
@@ -3014,6 +3198,17 @@ private fun List<Int>.isAllZeroValues(): Boolean = all { it == 0 }
 
 private fun toCsv(values: ByteArray): String {
     return values.joinToString(",") { (it.toInt() and 0xFF).toString() }
+}
+
+private fun curveChannelColors(): List<Color> {
+    return listOf(
+        Color(0xFFBFD9FF),
+        Color(0xFF6F8CFF),
+        Color(0xFF8AD8A8),
+        Color(0xFFC8A6FF),
+        Color(0xFF8FE7F7),
+        Color(0xFFFFA3A3)
+    )
 }
 
 private fun buildDefaultCurveGroups(type: Int): List<CurveGroup> {
