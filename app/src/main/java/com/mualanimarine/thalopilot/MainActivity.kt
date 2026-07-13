@@ -1,4 +1,4 @@
-package com.mualanimarine.betterreeflightmanager
+package com.mualanimarine.thalopilot
 
 import android.Manifest
 import android.content.ClipData
@@ -55,7 +55,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -127,17 +126,16 @@ import com.google.zxing.BinaryBitmap
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.DecodeHintType
 import com.google.zxing.MultiFormatReader
-import com.google.zxing.PlanarYUVLuminanceSource
 import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.ResultPointCallback
 import com.google.zxing.common.HybridBinarizer
-import com.mualanimarine.betterreeflightmanager.device.defaultHandValues
-import com.mualanimarine.betterreeflightmanager.device.defaultSchedule
-import com.mualanimarine.betterreeflightmanager.device.parseDeviceSnapshot
-import com.mualanimarine.betterreeflightmanager.model.TimeLuminance
-import com.mualanimarine.betterreeflightmanager.ui.theme.BetterReefLightManagerTheme
-import com.mualanimarine.betterreeflightmanager.util.CommandUtil
-import com.mualanimarine.betterreeflightmanager.util.HexStringUtil
+import com.mualanimarine.thalopilot.device.defaultHandValues
+import com.mualanimarine.thalopilot.device.defaultSchedule
+import com.mualanimarine.thalopilot.device.parseDeviceSnapshot
+import com.mualanimarine.thalopilot.model.TimeLuminance
+import com.mualanimarine.thalopilot.ui.theme.ThaloPilotTheme
+import com.mualanimarine.thalopilot.util.CommandUtil
+import com.mualanimarine.thalopilot.util.HexStringUtil
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -164,7 +162,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BetterReefLightManagerTheme {
+            ThaloPilotTheme {
                 val navController = rememberNavController()
                 AppNavHost(navController)
             }
@@ -218,7 +216,7 @@ private fun HomeScreen(
         containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("BetterReefLightManager", fontWeight = FontWeight.SemiBold) },
+                title = { Text("ThaloPilot · 礁谱智控", fontWeight = FontWeight.SemiBold) },
                 colors = transparentTopBarColors()
             )
         }
@@ -3258,7 +3256,7 @@ private fun buildDeviceCurveGroupId(deviceName: String): String {
 }
 
 private fun saveCurveGroups(
-    dataStore: com.mualanimarine.betterreeflightmanager.util.SharedPreferencesUtil,
+    dataStore: com.mualanimarine.thalopilot.util.SharedPreferencesUtil,
     type: Int,
     groups: List<CurveGroup>,
     selectedGroupId: String
@@ -3287,7 +3285,7 @@ private fun saveCurveGroups(
 }
 
 private fun loadCurveGroups(
-    dataStore: com.mualanimarine.betterreeflightmanager.util.SharedPreferencesUtil,
+    dataStore: com.mualanimarine.thalopilot.util.SharedPreferencesUtil,
     type: Int
 ): List<CurveGroup> {
     val raw = dataStore.getCurveGroups(type).orEmpty()

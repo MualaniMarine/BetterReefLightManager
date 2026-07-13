@@ -1,7 +1,7 @@
-package com.mualanimarine.betterreeflightmanager.device
+package com.mualanimarine.thalopilot.device
 
-import com.mualanimarine.betterreeflightmanager.Constant
-import com.mualanimarine.betterreeflightmanager.model.TimeLuminance
+import com.mualanimarine.thalopilot.Constant
+import com.mualanimarine.thalopilot.model.TimeLuminance
 
 fun defaultHandValues(type: Int): ByteArray {
     return if (type == Constant.Type.TYPE_K7) {

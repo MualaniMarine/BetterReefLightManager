@@ -1,4 +1,4 @@
-# BetterReefLightManager
+# ThaloPilot（礁谱智控）
 
 ## 项目说明
 

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace "com.mualanimarine.betterreeflightmanager"
+    namespace "com.mualanimarine.thalopilot"
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.mualanimarine.betterreeflightmanager"
+        applicationId "com.mualanimarine.thalopilot"
         minSdk 23
         targetSdk 34
         versionCode 1

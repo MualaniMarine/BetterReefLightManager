@@ -1,4 +1,4 @@
-package com.mualanimarine.betterreeflightmanager.ui.theme
+package com.mualanimarine.thalopilot.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

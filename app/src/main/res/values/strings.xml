@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BetterReefLightManager</string>
+    <string name="app_name">ThaloPilot</string>
     <string name="audit_summary">已重建标准 Android 工程骨架，当前优先恢复配网配置、设备连接和协议调试链路。</string>
     <string name="audit_summary_detail">当前版本不是原始功能的完整恢复，而是一个可编译、可继续迁移的干净基线。已接回：Gradle 工程、基础存储、协议工具、Socket 连接、最小控制页。待迁移：Esptouch 配网、时间曲线 UI、扫码、图表和历史页面。</string>
     <string name="open_network">打开网络配置页</string>

@@ -1,7 +1,7 @@
-package com.mualanimarine.betterreeflightmanager
+package com.mualanimarine.thalopilot
 
 import android.app.Application
-import com.mualanimarine.betterreeflightmanager.util.SharedPreferencesUtil
+import com.mualanimarine.thalopilot.util.SharedPreferencesUtil
 
 class BaseApplication : Application() {
     lateinit var dataStore: SharedPreferencesUtil

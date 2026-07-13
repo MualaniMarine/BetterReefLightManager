@@ -1,4 +1,4 @@
-package com.mualanimarine.betterreeflightmanager.util
+package com.mualanimarine.thalopilot.util
 
 import android.content.Context
 

@@ -1,9 +1,9 @@
-package com.mualanimarine.betterreeflightmanager
+package com.mualanimarine.thalopilot
 
 import android.os.Handler
 import android.util.Log
-import com.mualanimarine.betterreeflightmanager.util.CommandUtil
-import com.mualanimarine.betterreeflightmanager.util.HexStringUtil
+import com.mualanimarine.thalopilot.util.CommandUtil
+import com.mualanimarine.thalopilot.util.HexStringUtil
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream

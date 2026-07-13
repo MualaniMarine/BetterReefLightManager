@@ -1,4 +1,4 @@
-package com.mualanimarine.betterreeflightmanager.model
+package com.mualanimarine.thalopilot.model
 
 data class TimeLuminance(
     var hour: Int = 0,

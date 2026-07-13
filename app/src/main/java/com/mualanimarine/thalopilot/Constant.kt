@@ -1,7 +1,7 @@
-package com.mualanimarine.betterreeflightmanager
+package com.mualanimarine.thalopilot
 
 object Constant {
-    const val TAG = "BetterReefLightManager"
+    const val TAG = "ThaloPilot"
     const val DEVICE_PORT = 8266
 
     object MessageTag {

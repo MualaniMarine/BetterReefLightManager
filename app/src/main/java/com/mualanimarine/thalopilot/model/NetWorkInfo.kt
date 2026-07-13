@@ -1,4 +1,4 @@
-package com.mualanimarine.betterreeflightmanager.model
+package com.mualanimarine.thalopilot.model
 
 data class NetWorkInfo(
     var connected: Boolean = false,

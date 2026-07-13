@@ -1,4 +1,4 @@
-package com.mualanimarine.betterreeflightmanager.util
+package com.mualanimarine.thalopilot.util
 
 object HexStringUtil {
     fun hexToByteArray(value: String): ByteArray {

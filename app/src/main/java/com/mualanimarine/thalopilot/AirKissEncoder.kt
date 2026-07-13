@@ -1,4 +1,4 @@
-package com.mualanimarine.betterreeflightmanager
+package com.mualanimarine.thalopilot
 
 import kotlin.random.Random
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.BetterReefLightManager" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.ThaloPilot" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">#1F6F78</item>
         <item name="colorSecondary">#E5A33B</item>
         <item name="android:statusBarColor" tools:targetApi="l">#1F6F78</item>

@@ -1,4 +1,4 @@
-package com.mualanimarine.betterreeflightmanager.ui.theme
+package com.mualanimarine.thalopilot.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +26,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun BetterReefLightManagerTheme(
+fun ThaloPilotTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {

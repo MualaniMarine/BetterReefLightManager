@@ -1,6 +1,6 @@
-package com.mualanimarine.betterreeflightmanager.util
+package com.mualanimarine.thalopilot.util
 
-import com.mualanimarine.betterreeflightmanager.model.TimeLuminance
+import com.mualanimarine.thalopilot.model.TimeLuminance
 
 object CommandUtil {
     const val START_TAG = "AAA5"
