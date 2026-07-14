@@ -1,4 +1,4 @@
-# 接手梳理
+# ThaloPilot 项目接手梳理
 
 ## 1. 接手结论
 
@@ -41,7 +41,7 @@
 
 ### 主要入口
 
-- [MainActivity.kt](/D:/Dev/CodeX/NP/app/src/main/java/com/nemo/caideng/MainActivity.kt)
+- [MainActivity.kt](../app/src/main/java/com/mualanimarine/thalopilot/MainActivity.kt)
 
 ### 核心能力
 
@@ -71,7 +71,7 @@
 
 ### 业务模型
 
-- 设备类型：`K7`、`X4`
+- 设备类型：`K7`、`K7mini`
 - 预设曲线：`SPS`、`LPS`、`SL`
 - 自动 / 手动模式
 - 演示模式
@@ -88,9 +88,9 @@
 
 ### 日常开发看这里
 
-- [README.md](/D:/Dev/CodeX/NP/README.md)
-- [REBUILD_STATUS.md](/D:/Dev/CodeX/NP/docs/REBUILD_STATUS.md)
-- [PROTOCOL_SPEC.md](/D:/Dev/CodeX/NP/docs/PROTOCOL_SPEC.md)
+- [README.md](../README.md)
+- [REBUILD_STATUS.md](REBUILD_STATUS.md)
+- [PROTOCOL_SPEC.md](PROTOCOL_SPEC.md)
 - `app/`
 
 ### 历史对照看这里
@@ -111,8 +111,6 @@
 - 不要把反编译代码直接当成正式代码库
 - 不要把“热点直连控制”和“SmartConfig 配网”混成同一件事
 
-## 9. 当前备份
+## 9. 备份说明
 
-当前阶段的项目备份：
-
-- [NP_backup_20260421_0615.zip](/D:/Dev/CodeX/NP/NP_backup_20260421_0615.zip)
+历史备份文件不随当前仓库保留。需要制作交付备份时，应通过 Git 标签或归档当前提交生成，避免文档引用本机绝对路径。

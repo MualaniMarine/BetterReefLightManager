@@ -6,8 +6,8 @@
 
 协议实现主要在：
 
-- [CommandUtil.kt](/D:/Dev/CodeX/NP/app/src/main/java/com/nemo/caideng/util/CommandUtil.kt)
-- [ConnectThread.kt](/D:/Dev/CodeX/NP/app/src/main/java/com/nemo/caideng/ConnectThread.kt)
+- [CommandUtil.kt](../app/src/main/java/com/mualanimarine/thalopilot/util/CommandUtil.kt)
+- [ConnectThread.kt](../app/src/main/java/com/mualanimarine/thalopilot/ConnectThread.kt)
 
 ## 2. 基础连接
 

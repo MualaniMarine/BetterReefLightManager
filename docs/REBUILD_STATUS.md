@@ -1,4 +1,4 @@
-# 当前状态
+# ThaloPilot 当前状态
 
 ## 1. 总体状态
 
@@ -18,8 +18,7 @@
 - 标准 Android 工程结构已建立
 - 已切到 Kotlin + Compose
 - 旧反编译材料已与新工程目录分离
-- 项目备份已生成：
-  - `NP_backup_20260421_0615.zip`
+- 当前工程使用包名 `com.mualanimarine.thalopilot`
 
 ### 基础能力
 
